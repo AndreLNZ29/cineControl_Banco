@@ -29,7 +29,6 @@ cinecontrol_etapa2/app/       Aplicação Streamlit e scripts da Etapa 2
   app.py                      Interface da aplicação
   db.py                       Acesso ao MySQL e transações
   requirements.txt            Dependências Python
-  .env.example                Modelo de configuração local
   sql/04_etapa2.sql           Objetos e recursos da Etapa 2
   sql/05_otimizacao.sql        Consultas EXPLAIN para análise de índices
   sql/seed_etapa2.sql          Dados de demonstração da Etapa 2
@@ -68,13 +67,7 @@ cd cinecontrol_etapa2/app
 pip install -r requirements.txt
 ```
 
-Crie o arquivo local `.env` a partir do modelo:
-
-```bash
-cp .env.example .env
-```
-
-No PowerShell, use `Copy-Item .env.example .env`. Edite `.env` com as credenciais do seu MySQL:
+Crie um arquivo chamado `.env` dentro de `cinecontrol_etapa2/app` e adicione as configurações abaixo com as credenciais do seu MySQL:
 
 ```dotenv
 DB_HOST=localhost
