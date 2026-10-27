@@ -1,0 +1,11 @@
+# Arquivos de ambiente: mantenha credenciais locais fora do Git.
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+
+# Arquivos gerados pelo Python
+__pycache__/
+*.py[cod]
