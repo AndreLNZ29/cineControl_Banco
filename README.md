@@ -33,11 +33,10 @@ docs/                         Modelos e relatórios
   relatorio-etapa-1.pdf       Relatório da Etapa 1
 sql/                          Todos os scripts SQL (Etapas 1 e 2)
   01_ddl.sql                  Criação do banco, tabelas e restrições
-  02_carga.sql                Dados de teste da Etapa 1
+  02_carga.sql                Dados de teste
   03_consultas.sql            Consultas SQL da Etapa 1
   04_etapa2.sql               Objetos e recursos da Etapa 2
   05_otimizacao.sql           Consultas EXPLAIN para análise de índices
-  seed_etapa2.sql             Dados de demonstração da Etapa 2
 .gitignore
 README.md
 requirements.txt              Dependências Python
@@ -55,14 +54,9 @@ mysql -u root -p cinecontrol < sql/03_consultas.sql
 
 # Etapa 2 — adiciona views, triggers, índices e perfis de acesso
 mysql -u root -p cinecontrol < sql/04_etapa2.sql
-
-# Opcional — substitui a carga inicial pelos dados de demonstração
-# ATENÇÃO: executa TRUNCATE em todas as tabelas
-mysql -u root -p cinecontrol < sql/seed_etapa2.sql
 ```
 
 > **Atenção:** `01_ddl.sql` recria o banco `cinecontrol` e apaga os dados de versões anteriores.  
-> `seed_etapa2.sql` executa `TRUNCATE` em todas as tabelas antes de inserir os dados de demonstração.
 
 ## Instalar e executar a aplicação
 
