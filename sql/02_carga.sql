@@ -5,7 +5,6 @@ USE cinecontrol;
 
 SET FOREIGN_KEY_CHECKS = 0;
 TRUNCATE TABLE historico_situacao_filme;
-TRUNCATE TABLE auditoria_reserva;
 TRUNCATE TABLE reserva;
 TRUNCATE TABLE sessao;
 TRUNCATE TABLE assento;
