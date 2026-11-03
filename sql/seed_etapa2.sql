@@ -1,9 +1,11 @@
--- CineControl | seed_completa.sql
+-- CineControl | seed_etapa2.sql
 -- Substitui (ou complementa) a carga original com dados muito mais ricos.
--- Execute em ordem: 01_ddl.sql → este arquivo → 04_etapa2.sql → seed_etapa2.sql (opcional)
+-- Execute OBRIGATORIAMENTE nesta ordem:
+--   01_ddl.sql → 04_etapa2.sql → este arquivo
+-- (04_etapa2.sql deve rodar ANTES deste arquivo porque cria a tabela auditoria_reserva)
 --
 -- Para rodar do zero:
---   mysql -u root -p cinecontrol < seed_completa.sql
+--   mysql -u root -p cinecontrol < seed_etapa2.sql
 -- Para rodar sobre banco já populado (sem DROP):
 --   Comente as linhas TRUNCATE abaixo.
 USE cinecontrol;

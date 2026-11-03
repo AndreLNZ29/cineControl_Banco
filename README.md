@@ -20,54 +20,59 @@ Projeto acadêmico de gerenciamento de cinema. O repositório reúne o banco rel
 ## Estrutura do projeto
 
 ```text
-docs/                         Modelos e relatórios
-qsl/                          Scripts SQL da Etapa 1
-  01_ddl.sql                  Criação do banco, tabelas e regras
-  02_carga.sql                Dados de teste da Etapa 1
-  03_consultas.sql            Consultas SQL
-cinecontrol_etapa2/app/       Aplicação Streamlit e scripts da Etapa 2
+app/                          Aplicação Streamlit
+  .env                        Credenciais locais (não versionado)
   app.py                      Interface da aplicação
   db.py                       Acesso ao MySQL e transações
-  requirements.txt            Dependências Python
-  sql/04_etapa2.sql           Objetos e recursos da Etapa 2
-  sql/05_otimizacao.sql        Consultas EXPLAIN para análise de índices
-  sql/seed_etapa2.sql          Dados de demonstração da Etapa 2
+docs/                         Modelos e relatórios
+  dicionario-dados.pdf        Dicionário de dados completo
+  mer-conceitual.drawio       Diagrama MER editável
+  mer-conceitual.png          Diagrama MER (imagem)
+  mer.pdf                     MER em PDF
+  modelo-logico.pdf           Modelo lógico relacional
+  relatorio-etapa-1.pdf       Relatório da Etapa 1
+sql/                          Todos os scripts SQL (Etapas 1 e 2)
+  01_ddl.sql                  Criação do banco, tabelas e restrições
+  02_carga.sql                Dados de teste da Etapa 1
+  03_consultas.sql            Consultas SQL da Etapa 1
+  04_etapa2.sql               Objetos e recursos da Etapa 2
+  05_otimizacao.sql           Consultas EXPLAIN para análise de índices
+  seed_etapa2.sql             Dados de demonstração da Etapa 2
+.gitignore
+README.md
+requirements.txt              Dependências Python
 ```
 
 ## Configurar o banco de dados
 
-Com o MySQL 8.0 instalado e em execução, execute os scripts da Etapa 1 na ordem abaixo, a partir da raiz do repositório:
+Com o MySQL 8.0 instalado e em execução, execute os scripts na ordem abaixo, a partir da raiz do repositório:
 
 ```bash
-mysql -u root -p < qsl/01_ddl.sql
-mysql -u root -p cinecontrol < qsl/02_carga.sql
-mysql -u root -p cinecontrol < qsl/03_consultas.sql
+# Etapa 1 — cria o banco e carrega os dados iniciais
+mysql -u root -p < sql/01_ddl.sql
+mysql -u root -p cinecontrol < sql/02_carga.sql
+mysql -u root -p cinecontrol < sql/03_consultas.sql
+
+# Etapa 2 — adiciona views, triggers, índices e perfis de acesso
+mysql -u root -p cinecontrol < sql/04_etapa2.sql
+
+# Opcional — substitui a carga inicial pelos dados de demonstração
+# ATENÇÃO: executa TRUNCATE em todas as tabelas
+mysql -u root -p cinecontrol < sql/seed_etapa2.sql
 ```
 
-> **Atenção:** `01_ddl.sql` recria o banco `cinecontrol` e pode remover os dados de uma versão anterior.
-
-Em seguida, aplique a estrutura da Etapa 2:
-
-```bash
-mysql -u root -p cinecontrol < cinecontrol_etapa2/app/sql/04_etapa2.sql
-```
-
-Para carregar os dados de demonstração adicionais, execute também:
-
-```bash
-mysql -u root -p cinecontrol < cinecontrol_etapa2/app/sql/seed_etapa2.sql
-```
+> **Atenção:** `01_ddl.sql` recria o banco `cinecontrol` e apaga os dados de versões anteriores.  
+> `seed_etapa2.sql` executa `TRUNCATE` em todas as tabelas antes de inserir os dados de demonstração.
 
 ## Instalar e executar a aplicação
 
-No terminal, entre na pasta da aplicação e instale as dependências:
+Na raiz do repositório, instale as dependências:
 
 ```bash
-cd cinecontrol_etapa2/app
 pip install -r requirements.txt
 ```
 
-Crie um arquivo chamado `.env` dentro de `cinecontrol_etapa2/app` e adicione as configurações abaixo com as credenciais do seu MySQL:
+Crie um arquivo `.env` dentro da pasta `app/` com as credenciais do seu MySQL:
 
 ```dotenv
 DB_HOST=localhost
@@ -78,11 +83,12 @@ DB_NAME=cinecontrol
 SENHA_SAL=defina_um_valor_aleatorio
 ```
 
-O arquivo `.env` contém configurações privadas e não deve ser enviado ao Git. A aplicação procura esse arquivo junto de `db.py`; variáveis de ambiente já definidas no sistema têm prioridade.
+> O arquivo `.env` não é versionado. A aplicação o procura junto de `db.py`; variáveis de ambiente já definidas no sistema têm prioridade.
 
-Inicie o Streamlit dentro da pasta `cinecontrol_etapa2/app`:
+Inicie o Streamlit a partir da pasta `app/`:
 
 ```bash
+cd app
 streamlit run app.py
 ```
 
@@ -92,16 +98,16 @@ A aplicação estará disponível em <http://localhost:8501>.
 
 | Recurso | Localização |
 |---|---|
-| CRUD de filmes, sessões, clientes e reservas | Menu da aplicação (`app.py`) |
-| Consultas parametrizadas | Página “Consultas” |
-| Relatório consolidado via view | Página “Início / Relatório” |
-| Reserva transacional e demonstração de rollback | Páginas “Reservas” e “Transação (demo)” |
+| CRUD de filmes, sessões, clientes e reservas | Menu da aplicação (`app/app.py`) |
+| Consultas parametrizadas | Página "Consultas" |
+| Relatório consolidado via view | Página "Início / Relatório" |
+| Reserva transacional e demonstração de rollback | Páginas "Reservas" e "Transação (demo)" |
 | Perfis de acesso e view pública | `sql/04_etapa2.sql` |
 | Índices e análise com EXPLAIN | `sql/05_otimizacao.sql` |
 | Gatilhos de auditoria | `sql/04_etapa2.sql` |
 
-Na página **Segurança (demo)**, a entrada `' OR '1'='1` pode ser usada para demonstrar que a busca é enviada como parâmetro SQL e tratada como texto literal.
+Na página **Segurança (demo)**, a entrada `' OR '1'='1` demonstra que a busca é enviada como parâmetro SQL e tratada como texto literal — sem injeção.
 
 ## Documentação e modelo de dados
 
-As pastas `docs/` e `qsl/` contêm os diagramas, relatórios, dicionário de dados e scripts SQL do projeto. As principais entidades são `USUARIO`, `CLIENTE`, `ADMINISTRADOR`, `FILME`, `GENERO`, `ATOR`, `SALA`, `ASSENTO`, `SESSAO` e `RESERVA`.
+A pasta `docs/` contém os diagramas, relatórios e o dicionário de dados do projeto. As principais entidades são `USUARIO`, `CLIENTE`, `ADMINISTRADOR`, `FILME`, `GENERO`, `ATOR`, `SALA`, `ASSENTO`, `SESSAO` e `RESERVA`.

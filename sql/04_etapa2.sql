@@ -90,17 +90,20 @@ DELIMITER ;
 
 -- ══════════════════════════════════════════════════════════════
 -- 4. ÍNDICES ADICIONAIS (otimização de consultas críticas)
+-- NOTA: MySQL 8.0 não suporta CREATE INDEX IF NOT EXISTS.
+--       Os índices abaixo têm nomes distintos dos criados em 01_ddl.sql,
+--       portanto não haverá conflito ao rodar 04 logo após 01+02.
 -- ══════════════════════════════════════════════════════════════
 -- Consulta crítica 1: sessões futuras por sala
-CREATE INDEX IF NOT EXISTS idx_sessao_sala_inicio_sit
+CREATE INDEX idx_sessao_sala_inicio_sit
     ON sessao (id_sala, inicio, situacao);
 
 -- Consulta crítica 2: reservas por cliente em período
-CREATE INDEX IF NOT EXISTS idx_reserva_cli_data_sit
+CREATE INDEX idx_reserva_cli_data_sit
     ON reserva (id_cliente, data_reserva, situacao);
 
 -- Consulta crítica 3: título de filmes em cartaz (LIKE prefixado)
-CREATE INDEX IF NOT EXISTS idx_filme_titulo_sit
+CREATE INDEX idx_filme_titulo_sit
     ON filme (situacao, titulo);
 
 -- ══════════════════════════════════════════════════════════════
